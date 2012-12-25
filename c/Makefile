@@ -1,40 +1,44 @@
+#####generic conf
+SRC_FILTER = .c
+LIBS  = 
+LIBS += 
+CFLAGS = -Wall -I.
+LDFLAGS =
+CONF = .
+SOURCES :=  $(shell find ./ -type f -name '*${SRC_FILTER}')
+################
+
+################target_specific conf
+
+##### single target without a name - so we just call "make" without CONF=... for this target
+ifeq ($(CONF),.)
+#mkres := $(shell mkdir $(CONF))
+CFLAGS += 
+TARGET = danger 
 CC = gcc
-CFLAGS = -g -Wall -I.
+LD = gcc
+endif
+####
 
-default: test61
+################
 
-meeting: meeting.c
-	$(CC) $(CFLAGS) -o meeting meeting.c
 
-tsquare: tsquare.c
-	$(CC) $(CFLAGS) -o tsquare tsquare.c
+OBJS := $(patsubst ./%${SRC_FILTER}, ${CONF}/%.o, $(SOURCES))
 
-punctuation: punctuation.c
-	$(CC) $(CFLAGS) -o punctuation punctuation.c
+#all: post-build
+#post-build: $(TARGET)
+#   @echo post_build_step if you want to run somthing here like copy the binary to somewhere, etc.
+#   #
 
-toyarmy: toyarmy.c
-	$(CC) $(CFLAGS) -o toyarmy toyarmy.c
+all: $(TARGET)
 
-equiv: equiv.c
-	$(CC) $(CFLAGS) -o equiv equiv.c
+$(TARGET): ${OBJS}
+	$(LD) ${OBJS} ${LIBS} ${LDFLAGS} -o ${CONF}/"$(TARGET)"
 
-danger: danger.c
-	$(CC) $(CFLAGS) -o danger danger.c
-
-watermelon: watermelon.c
-	$(CC) $(CFLAGS) -o watermelon watermelon.c
-
-longword: longword.c
-	$(CC) $(CFLAGS) -o longword longword.c
-
-sale: sale.c
-	$(CC) $(CFLAGS) -o sale sale.c
-
-fastmath: fastmath.c
-	$(CC) $(CFLAGS) -o fastmath fastmath.c
-
-domino: domino.c
-	$(CC) $(CFLAGS) -o domino domino.c
+${CONF}/%.o: %${SRC_FILTER}
+	$(CC) $(CFLAGS) -o $@ -c $<
 
 clean:
 	rm -f *.o *~
+	rm -f ${CONF}/$(TARGET)
+	rm -f $(OBJS)
