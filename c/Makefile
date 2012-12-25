@@ -1,3 +1,5 @@
+# Makefile from: http://www.clearevo.com/blog/programming/2011/08/22/gnu_c_generic_makefile_example.html
+
 #####generic conf
 SRC_FILTER = .c
 LIBS  = 
