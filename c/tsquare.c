@@ -1,3 +1,8 @@
+/*****************************************
+ * Codeforces Problem 1A - Theater Square
+ * Incomplete!!
+ * ***************************************/
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
