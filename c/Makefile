@@ -4,7 +4,7 @@
 SRC_FILTER = .c
 LIBS  = 
 LIBS += 
-CFLAGS = -Wall -I.
+CFLAGS = -Wall -lm -I.
 LDFLAGS =
 CONF = .
 SOURCES :=  $(shell find ./ -type f -name '*${SRC_FILTER}')
