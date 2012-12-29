@@ -1,6 +1,5 @@
 /*****************************************
  * Codeforces Problem 1A - Theater Square
- * Incomplete!!
  * ***************************************/
 
 #include <stdlib.h>
@@ -18,23 +17,21 @@ main(int argc, char *argv[])
 
   int n,m,a;
   unsigned long long x, y, area;
+  //double x, y, area;
 
   x = 0;
   y = 0;
   
   scanf("%d %d %d",&n,&m,&a);
 
-  while(n > 0){
-	x++;
-	n -= a;
-  }
-  while(m > 0){
-	y++;
-	m -= a;
-  }
+  x = ceil(((double)n)/a);
+  y = ceil(((double)m)/a);
+ 
+  //printf("%d %d\n",x,y);
+
   area = x * y;
 
-  printf("%llu\n",area);
+  printf("%lld\n",area);
 
   return 0;
 }
