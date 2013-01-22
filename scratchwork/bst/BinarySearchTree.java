@@ -1,10 +1,11 @@
 import java.util.ArrayList;
 
-/*************************
+/*******************************************************************************************
  * Binary Search Tree
  * Problem to solve:
  * - http://codercareer.blogspot.com/2011/09/interview-question-no-1-binary-search.html
- *************************/
+ * Converts BST to Doubly LL via ArrayList
+ *******************************************************************************************/
 public class BinarySearchTree {
 
 	/**
@@ -14,6 +15,12 @@ public class BinarySearchTree {
 		Integer value;
 		Node left;
 		Node right;
+		
+		private Node(){
+			this.value = null;
+			this.left = null;
+			this.right = null;
+		}
 		
 		private Node(int value){
 			this.value = value;
@@ -37,12 +44,17 @@ public class BinarySearchTree {
 	
 	Node head;
 	
+	Node ll_head;
+	Node ptr;
+	
 	public BinarySearchTree(){
 		head = null;
+		ll_head = null;
 	}
 	
 	public BinarySearchTree(int value){
 		head = new Node(value);
+		ll_head = null;
 	}
 	
 	public void insert(int value){
@@ -176,6 +188,50 @@ public class BinarySearchTree {
 		return postOrderHelper(n.left) + postOrderHelper(n.right) + n.value.toString() + " ";
 	}
 	
+	public Node toLinkedList(){
+		ArrayList<Node> list = new ArrayList<Node>();
+		
+		// take all nodes and push them into arraylist using inorder traversal
+		list = ll_helper(this.head,list);
+		
+		// print out the list
+//		for(int i = 0; i < list.size(); i++){
+//			System.out.print(list.get(i).value + " ");
+//		}
+//		System.out.println();
+		
+		// head of list
+		Node head = new Node();
+		Node ptr = head;
+		// create the doubly linked list
+		for(int i = 0; i < list.size(); i++){
+			ptr.right = list.get(i);
+			list.get(i).left = ptr;
+			ptr = ptr.right;
+		}
+		
+		ptr = head.right;
+		System.out.print(ptr.value);
+		while(ptr.right != null){
+			ptr = ptr.right;
+			System.out.print("->" + ptr.value);
+			
+		}
+		
+		return head;
+	}
+	
+	// push all nodes into list using in order traversal (maintain order)
+	private ArrayList<Node> ll_helper(Node n, ArrayList<Node> list){
+		if(n == null){return list;}
+		
+		list = ll_helper(n.left,list);
+		list.add(n);
+		list = ll_helper(n.right,list);
+		
+		return list;
+	}
+	
 	public static void main(String[] args) {
 		
 		BinarySearchTree bst = new BinarySearchTree();
@@ -195,10 +251,11 @@ public class BinarySearchTree {
 		bst.insert(13);
 		bst.insert(15);
 
-		bst.drawTree();
-		bst.preOrderTraversal();
+//		bst.drawTree();
+//		bst.preOrderTraversal();
 		bst.inOrderTraversal();
-		bst.postOrderTraversal();
+//		bst.postOrderTraversal();
+		bst.toLinkedList();
 		
 	}
 }
