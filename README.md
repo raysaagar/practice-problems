@@ -12,6 +12,7 @@ These are my solutions to various practice problems as well as example code segm
 * Codeforces problems can be found at [Codeforces](www.codeforces.com).
 * Cracking the Code problems can be found in the Cracking the Coding Interview book.
 * Scratchwork contains various example code, such as data structures and algorithms.
+* Interviews and practice contains interview related problems, for now mostly notes.
 
 ### Usage: ###
 
