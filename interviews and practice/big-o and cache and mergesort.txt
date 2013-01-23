@@ -1,0 +1,227 @@
+Array
+Insert: o(1)
+Delete: o(1)
+Search: o(n)
+
+LinkedList
+Insert: o(1) at front, o(n) otherwise
+Delete: o(1) at front, o(n) otherwise
+Search: o(n)
+
+doubly linked list
+Insert: o(1) at front, o(n) otherwise
+Delete: o(1) at front, o(n) otherwise
+Search: o(n)
+
+stack
+push: o(1)
+pop: 1
+top: 1 
+search?:  n -> search all
+
+queue
+insert: 1
+remove: 1
+size: 1 -> var
+
+BST
+Insert: log n
+Delete: log n
+Search: log n
+
+Heap
+Insert: log n
+Delete: log n
+Top: 1
+lookup: search all, n
+
+Hashtable
+Insert: 1
+Delete: 1
+Search: 1
+
+
+// CACHE INTERFACE 
+
+// here's a start:
+public interface Cache<K, V> {
+  // fill this in
+
+  // question4: what do you return if key isn't in the cache? -> null yeah
+  // this isn't too important, but sometimes people use the annotation @Nullable to indicate something
+  // can be null (by convention, nothing 'should' be null)
+  @Nullable V lookup(K key); // ??? yeah, also FYI, public isn't necessary if interface is public alright SGTM
+  
+  boolean delete(K key);
+  
+  void insert(K key, V value);
+  
+    // LRU is specific to the implementation, leave that to the class implementing the cache ok
+}
+
+
+// question5: implement the cache using LRU
+// here's a start
+// also more FYI, if you put "final" on a class, it prevents the class from being subclassed. this is good practice if you ever want to make a class that contains only a static method, a class that is simply a data container with no logic (e.g. Pair<First, Second>), or to prevent unwanted dependencies on your code
+public final class LRUCache<K, V> implements Cache<K, V> {
+
+ // how can you implement all these operations in O(1) time? -> use a hashtable to store the key as a pointer to the value -- how do you get the last recently used in O(1) time? use a doubly linked list to store the values, have a pointer to the last item in list
+ 
+    private static final class Node<K,V> {
+      private final K key;
+      private final V value;
+      private Node<K, V> next;
+      private Node<K, V> prev;
+      
+      public Node(K key, V value) {
+          this.key = key;
+          this.value = value;
+          this.next = null;
+          this.prev = null;
+      }  
+      // getters and setters, whatever...
+    }
+ 
+    // define your instance variables here
+    private Node<K,V> head; // use generics, what is your list of?
+    private Node<K,V> tail;
+    private Map<K, Node<K,V>> table; // leaving it as the interface type, agnostic of the actual implementation
+    private final int cachesize;
+      
+    public LRUCache(int cachesize) {
+        this.head = null;
+        this.table = new HashMap<K, Node<K,V>>();
+        this.cachesize = cachesize;
+        this.tail = null;
+    }
+      
+    @Nullable
+    @Override
+    public V lookup(K key){
+        Node<K,V> val = table.get(key);
+        if (val == null)
+            return null; // not in cache
+            
+        this.insert(key, val.getValue());
+        return val.getValue();        
+    }
+    
+    // true if deleted, false if not there
+    @Override
+    public boolean delete(K key){
+        Node<K, V> value = table.get(key);
+        if (value == null)
+            return false;
+        // remove from list
+        
+        if (value.getPrev() == null && value.getNext() == null) {
+            head = null;
+            tail = null;
+        } else if (value.getPrev() == null) { // front of list
+            value.getNext().setPrev(null);
+            head = value.getNext();
+        } else if (value.getNext() == null) { // end of list
+            tail = value.getPrev();
+            value.getPrev().setNext(null);
+        } else { //middle of list
+            value.getPrev().setNext(value.getNext());
+            value.getNext().setPrev(value.getPrev());
+        }
+        table.remove(key);
+        return true;
+    }
+       
+    @Override
+    public void insert(K key, V value){
+        // cache is full
+        Node<K,V> item = new Node<K,V>(key, value);
+        delete(key);
+        if (table.size() == this.cachesize) {
+            // pull out last node in list
+            K lastkey = tail.getKey();
+            tail = tail.getPrev();
+            tail.setNext(null);
+           
+            // remove it from map
+            table.remove(lastkey);
+        }
+        table.put(key,item);
+        // empty list
+        if(head == null){
+            head = item;
+            tail = item;
+        } 
+        else {
+            item.setNext(head);
+            head.setPrev(item);
+            head = item;
+        }
+    }
+
+
+}
+
+// merge arrays a and b into dest
+// precondition: sizeof(dest) == sizeof(a) + sizeof(b)
+void merge(int *a, int na, int *b, int nb, int *dest) {
+
+}
+
+// sorts in place
+// hint: you probbaly want to use malloc and memcpy somewhere
+void mergesort(int *array, int n) {
+
+}
+
+
+// KENNY'S MERGESORT
+void merge(int *a, int na, int *b, int nb, int *dest) {
+  int ca, cb = 0;
+  while (ca < na && cb < nb) {
+    if (a[ca] < b[cb]) {
+      dest[ca + cb] = a[ca];
+      ca++;
+    } else {
+      dest[ca + cb] = b[cb];
+      cb++;
+    }
+  }
+  if (ca < na) {
+    memcpy(dest + ca + cb, a + ca, sizeof(int) * (na - ca));
+  } else {
+    memcpy(dest + ca + cb, b + cb, sizeof(int) * (nb - cb));
+  }
+}
+
+void my_mergesort(int *array, int n) {
+  if (n == 0 || n == 1) {
+    return;
+  }
+  int half = n / 2;
+  my_mergesort(array, half);
+  my_mergesort(array + half, n - half);
+  int *dest = (int *) malloc(sizeof(int) * n);
+  merge(array, half, array + half, n - half, dest);
+  memcpy(array, dest, sizeof(int) * n);
+  free(dest);
+}
+
+
+bool is_bst_helper(bnode *root, int min, int max) {
+  if (root == NULL) {
+    return true;
+  }
+  if (root->value < min || root->value > max) {
+    return false;
+  }
+  return is_bst_helper(root->left, min, root->value)
+    && is_bst_helper(root->right, root->value, max);
+}
+
+bool is_bst(bnode *root) {
+  return is_bst_helper(root, INT_MIN, INT_MAX);
+}
+
+     10
+   5    14
+ 1  12
