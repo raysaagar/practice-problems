@@ -1,5 +1,5 @@
 /*******************************
- *
+ * Bot saves princess - 1
  * ****************************/
 
 #include <stdio.h>
@@ -64,7 +64,7 @@ void displayPathtoPrincess(int n, char grid[n][n]){
     }
     else if(y < locy){
       printf("RIGHT\n");
-      grid[y+1][x] = 'm';
+      grid[y+1][x+1] = 'm';
     }
     else
       return;
